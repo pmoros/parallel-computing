@@ -1,5 +1,6 @@
 package co.edu.unal.paralela;
 
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
 /**
@@ -7,6 +8,8 @@ import java.util.concurrent.RecursiveAction;
  * un arreglo usando paralelismo.
  */
 public final class ReciprocalArraySum {
+
+    // private static ForkJoinPool forkJoinPool = new ForkJoinPool();
 
     /**
      * Constructor.
@@ -136,7 +139,9 @@ public final class ReciprocalArraySum {
 
         @Override
         protected void compute() {
-            // TODO:
+            for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
+                value += 1 / input[i];
+            }
         }
     }
 
@@ -156,10 +161,16 @@ public final class ReciprocalArraySum {
 
         double sum = 0;
 
-        // Calcula la suma de los recíprocos de los elementos del arreglo
-        for (int i = 0; i < input.length; i++) {
-            sum += 1 / input[i];
-        }
+        // Sum the two halves of the input array in parallel.
+        final int mid = input.length / 2;
+        final ReciprocalArraySumTask left = new ReciprocalArraySumTask(0, mid, input);
+        final ReciprocalArraySumTask right = new ReciprocalArraySumTask(mid, input.length, input);
+
+        left.fork();
+        right.compute();
+
+        left.join();
+        sum = left.getValue() + right.getValue();
 
         return sum;
     }
