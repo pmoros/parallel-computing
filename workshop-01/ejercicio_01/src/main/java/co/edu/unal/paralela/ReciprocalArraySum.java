@@ -2,6 +2,7 @@ package co.edu.unal.paralela;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
 /**
  * Clase que contiene los métodos para implementar la suma de los recíprocos de
@@ -139,8 +140,20 @@ public final class ReciprocalArraySum {
 
         @Override
         protected void compute() {
-            for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
-                value += 1 / input[i];
+            if (endIndexExclusive - startIndexInclusive <= 100000) {
+                // calculation done sequentially
+                for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
+                    value += 1 / input[i];
+                }
+            } else {
+                // use recursion to split the task into smaller tasks
+                int mid = (startIndexInclusive + endIndexExclusive) / 2;
+                ReciprocalArraySumTask left = new ReciprocalArraySumTask(startIndexInclusive, mid, input);
+                ReciprocalArraySumTask right = new ReciprocalArraySumTask(mid, endIndexExclusive, input);
+                left.fork();
+                right.compute();
+                left.join();
+                value = left.getValue() + right.getValue();
             }
         }
     }
@@ -161,16 +174,9 @@ public final class ReciprocalArraySum {
 
         double sum = 0;
 
-        // Sum the two halves of the input array in parallel.
-        final int mid = input.length / 2;
-        final ReciprocalArraySumTask left = new ReciprocalArraySumTask(0, mid, input);
-        final ReciprocalArraySumTask right = new ReciprocalArraySumTask(mid, input.length, input);
-
-        left.fork();
-        right.compute();
-
-        left.join();
-        sum = left.getValue() + right.getValue();
+        RecursiveAction sumTask = new ReciprocalArraySumTask(0, input.length, input);
+        ForkJoinPool.commonPool().invoke(sumTask);
+        sum = ((ReciprocalArraySumTask) sumTask).getValue();
 
         return sum;
     }
