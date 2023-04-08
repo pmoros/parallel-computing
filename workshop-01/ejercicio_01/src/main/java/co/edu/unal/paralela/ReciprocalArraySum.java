@@ -139,8 +139,21 @@ public final class ReciprocalArraySum {
 
         @Override
         protected void compute() {
-            for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
-                value += 1 / input[i];
+            // Uses recursive task to compute the sum of the first half of the
+            // input array
+            if (endIndexExclusive - startIndexInclusive > 100000) {
+                final int mid = (startIndexInclusive + endIndexExclusive) / 2;
+                final ReciprocalArraySumTask left = new ReciprocalArraySumTask(startIndexInclusive, mid, input);
+                final ReciprocalArraySumTask right = new ReciprocalArraySumTask(mid, endIndexExclusive, input);
+                left.fork();
+                right.compute();
+                left.join();
+                value = left.value + right.value;
+            } else {
+                // Compute sum of reciprocals for our part of the array
+                for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
+                    value += 1 / input[i];
+                }
             }
         }
     }

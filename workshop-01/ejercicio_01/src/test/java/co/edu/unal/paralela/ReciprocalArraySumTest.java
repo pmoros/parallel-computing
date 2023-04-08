@@ -121,6 +121,8 @@ public class ReciprocalArraySumTest {
                 "Se esperaba que la implementación de dos tareas en paralelo pudiera ejecutarse " +
                         " %fx veces más rápido, pero solo alcanzo a mejorar la rapidez (speedup) %fx veces",
                 minimalExpectedSpeedup, speedup);
+
+        System.out.println("Speedup: " + speedup);
         assertTrue(errMsg, speedup >= minimalExpectedSpeedup);
     }
 
@@ -132,6 +134,7 @@ public class ReciprocalArraySumTest {
                 "Se esperaba que la implementación de dos tareas en paralelo pudiera ejecutarse " +
                         "%fx veces más rápido, pero solo alcanzo a mejorar la rapidez (speedup) %fx veces",
                 minimalExpectedSpeedup, speedup);
+        System.out.println("Speedup: " + speedup);
         assertTrue(errMsg, speedup >= minimalExpectedSpeedup);
     }
 
@@ -144,6 +147,7 @@ public class ReciprocalArraySumTest {
                 "Se esperaba que la implmentación de muchas tareas en paralelo pudiera ejecutarse " +
                         "%fx veces más rápido, pero solo alcanzo a mejorar la rapidez (speedup) %fx veces",
                 minimalExpectedSpeedup, speedup);
+        System.out.println("Speedup: " + speedup);
         assertTrue(errMsg, speedup >= minimalExpectedSpeedup);
     }
 
@@ -156,6 +160,7 @@ public class ReciprocalArraySumTest {
                 "Se esperaba que la implmentación de muchas tareas en paralelo pudiera ejecutarse " +
                         " %fx veces más rápido, pero solo alcanzo a mejorar la rapidez (speedup) %fx veces",
                 minimalExpectedSpeedup, speedup);
+        System.out.println("Speedup: " + speedup);
         assertTrue(errMsg, speedup >= minimalExpectedSpeedup);
     }
 }
