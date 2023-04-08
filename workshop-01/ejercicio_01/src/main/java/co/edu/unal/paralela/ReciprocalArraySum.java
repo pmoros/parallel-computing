@@ -219,7 +219,6 @@ public final class ReciprocalArraySum {
 
         double sum = 0;
         for (ReciprocalArraySumTask task : tasks) {
-            task.join();
             sum += task.getValue();
         }
 
